@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">ToDoAppList</string>
+    <string name="desc">Add description for your note ..</string>
+    <string name="due">Due Date</string>
+    <string name="save_note">Save Note</string>
+    <string name="edit_note">Update</string>
+    <string name="title">Title</string>
+    <string name="search_title">Search</string>
+    <string name="search_hint">Search by Title</string>
+</resources>
