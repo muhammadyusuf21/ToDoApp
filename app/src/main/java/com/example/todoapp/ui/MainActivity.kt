@@ -1,18 +1,18 @@
 package com.example.todoapp.ui
 
 import android.app.SearchManager
-import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.View
-import android.widget.SearchView
+import androidx.appcompat.widget.SearchView
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import com.example.todoapp.R
 import dagger.android.support.DaggerAppCompatActivity
 import kotlinx.android.synthetic.main.activity_main.*
 
-class MainActivity : DaggerAppCompatActivity() {
+class MainActivity : DaggerAppCompatActivity(), android.widget.SearchView.OnQueryTextListener {
 
     lateinit var navController: NavController
 
@@ -20,6 +20,7 @@ class MainActivity : DaggerAppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        handleIntent(intent)
         navController = findNavController(R.id.container)
 
 
@@ -31,13 +32,35 @@ class MainActivity : DaggerAppCompatActivity() {
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.options_menu, menu)
 
-        // Associate searchable configuration with the SearchView
-        val searchManager = getSystemService(Context.SEARCH_SERVICE) as SearchManager
-        (menu.findItem(R.id.search).actionView as SearchView).apply {
-            setSearchableInfo(searchManager.getSearchableInfo(componentName))
-        }
+        var menuItem = menu?.findItem(R.id.search)
 
+        var searchView = menuItem?.actionView as SearchView
+
+        searchView.setOnQueryTextListener(this)
+
+        return super.onCreateOptionsMenu(menu)
+    }
+
+    override fun onQueryTextSubmit(query: String?): Boolean {
         return true
+    }
+
+    override fun onQueryTextChange(newText: String?): Boolean {
+        return true
+    }
+
+
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        handleIntent(intent)
+    }
+
+    private fun handleIntent(intent: Intent) {
+
+        if (Intent.ACTION_SEARCH == intent.action) {
+            val query = intent.getStringExtra(SearchManager.QUERY)
+            //use the query to search your data somehow
+        }
     }
 
     // Method #2
@@ -51,4 +74,8 @@ class MainActivity : DaggerAppCompatActivity() {
         fab.show()
         fab.visibility = View.VISIBLE
     }
+}
+
+private fun SearchView.setOnQueryTextListener(mainActivity: MainActivity) {
+
 }

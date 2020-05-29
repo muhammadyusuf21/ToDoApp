@@ -41,6 +41,4 @@ class NoteViewModel @Inject constructor(
         Log.e("DEBUG", "View model getallnotes")
         return noteRepository.getAllNotes()
     }
-
-
 }

@@ -3,18 +3,22 @@ package com.example.todoapp.ui.adapter
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Filter
+import android.widget.Filterable
 import androidx.recyclerview.widget.*
 import com.example.todoapp.R
 import com.example.todoapp.persistence.Note
 import kotlinx.android.synthetic.main.note_items.view.*
+import java.util.*
+import kotlin.collections.ArrayList
 
 
 class NoteAdapter(
     noteList: List<Note>,
     private val interaction: Interaction? = null
-) : RecyclerView.Adapter<NoteAdapter.ViewHolder>() {
+) : RecyclerView.Adapter<NoteAdapter.ViewHolder>(), Filterable {
 
-    private val notes = mutableListOf<Note>()
+    private var notes = mutableListOf<Note>()
 
     init {
         notes.addAll(noteList)
@@ -31,7 +35,9 @@ class NoteAdapter(
     }
 
     // Method #2
-    override fun getItemCount() = notes.size
+    override fun getItemCount(): Int {
+        return notes.size
+    }
 
 
     // Method #3
@@ -65,7 +71,7 @@ class NoteAdapter(
 
             //Handle item click
             itemView.setOnClickListener {
-                interaction?.onItemSelected(adapterPosition,item)
+                interaction?.onItemSelected(adapterPosition, item)
             }
         }
 
@@ -74,5 +80,9 @@ class NoteAdapter(
     // Method #7
     interface Interaction {
         fun onItemSelected(position: Int, item: Note)
+    }
+
+    override fun getFilter(): Filter {
+        TODO("Not yet implemented")
     }
 }
