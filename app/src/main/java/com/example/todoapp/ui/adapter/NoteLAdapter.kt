@@ -5,12 +5,13 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Filter
 import android.widget.Filterable
-import androidx.recyclerview.widget.*
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.RecyclerView
 import com.example.todoapp.R
 import com.example.todoapp.persistence.Note
 import kotlinx.android.synthetic.main.note_items.view.*
 import java.util.*
-import kotlin.collections.ArrayList
+import javax.inject.Inject
 
 
 class NoteAdapter(
@@ -19,6 +20,10 @@ class NoteAdapter(
 ) : RecyclerView.Adapter<NoteAdapter.ViewHolder>(), Filterable {
 
     private var notes = mutableListOf<Note>()
+
+    @Inject
+
+    lateinit var allNotes: List<Note>
 
     init {
         notes.addAll(noteList)
@@ -83,6 +88,32 @@ class NoteAdapter(
     }
 
     override fun getFilter(): Filter {
-        TODO("Not yet implemented")
+        return object : Filter() {
+            override fun performFiltering(constraint: CharSequence?): FilterResults {
+                val keywords = constraint.toString()
+                if (keywords.isEmpty()) {
+                    allNotes = notes
+                }
+                else{
+                    val filteredList = ArrayList<Note>()
+                    for (note in notes) {
+                        if (note.toString().toLowerCase(Locale.ROOT).contains(keywords.toLowerCase(Locale.ROOT)))
+                            filteredList.add(note)
+                    }
+                    allNotes = filteredList
+                }
+
+                val filterResults = FilterResults()
+                filterResults.values = allNotes
+                return  filterResults
+            }
+
+            @Suppress("UNCHECKED_CAST")
+            override fun publishResults(constraint: CharSequence?, results: FilterResults?) {
+                allNotes = results?.values as List<Note>
+                notifyDataSetChanged()
+            }
+        }
     }
+
 }
